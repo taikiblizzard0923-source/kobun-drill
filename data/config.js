@@ -35,7 +35,8 @@ window.DRILL_CONFIG = {
     MP: { label: "明治 政経", tone: "accent" },
     T: { label: "訳トレ", tone: "accent" },
     K: { label: "知識小問", tone: "blue" },
-    D: { label: "実力診断", tone: "ink" }
+    D: { label: "実力診断", tone: "ink" },
+    H: { label: "漢文", tone: "ink" }
   },
   guidePage: "guide.html", guidePageLabel: "入試方式ガイド：形式・過去の出典・必要な得点・準備すること",
   vocabLabel: "今日の古文単語",
