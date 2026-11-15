@@ -1,18 +1,18 @@
 {
  "types": {
-  "KY": "共通テスト型",
-  "MZ": "明治 全学部型",
-  "MH": "明治 法型",
-  "CH": "中央 法型",
-  "CK": "中央 共通型",
-  "RK": "立教型",
-  "HS": "法政 法型",
-  "GK": "学習院型",
-  "WH": "早稲田 法型",
-  "WS": "早稲田 商型",
-  "G": "弱点小問",
-  "MJ": "明治 情コミ型",
-  "MK": "明治 国際日本型"
+  "KY": "共テ",
+  "MG": "明学法",
+  "NJ": "日女",
+  "TJ": "東女",
+  "MZ": "明治全学部",
+  "JO": "上智TEAP",
+  "TY": "東洋法",
+  "GK": "学習院コア",
+  "MP": "明治政経",
+  "CH": "中央法",
+  "HS": "法政法Ⅱ",
+  "WS": "早稲田商",
+  "G": "弱点小問"
  },
  "schedule": [
   {
@@ -37,7 +37,7 @@
    "date": "2026-12-16",
    "weekday": "水",
    "sets": [
-    "MZ"
+    "MG"
    ],
    "minutes": 30,
    "exam": false
@@ -55,7 +55,7 @@
    "date": "2026-12-18",
    "weekday": "金",
    "sets": [
-    "RK"
+    "NJ"
    ],
    "minutes": 30,
    "exam": false
@@ -65,7 +65,7 @@
    "weekday": "土",
    "sets": [
     "KY",
-    "CH"
+    "TJ"
    ],
    "minutes": 60,
    "exam": false
@@ -74,7 +74,7 @@
    "date": "2026-12-20",
    "weekday": "日",
    "sets": [
-    "HS",
+    "MZ",
     "G"
    ],
    "minutes": 60,
@@ -102,7 +102,7 @@
    "date": "2026-12-23",
    "weekday": "水",
    "sets": [
-    "MJ"
+    "JO"
    ],
    "minutes": 30,
    "exam": false
@@ -120,7 +120,7 @@
    "date": "2026-12-25",
    "weekday": "金",
    "sets": [
-    "WH"
+    "TY"
    ],
    "minutes": 30,
    "exam": false
@@ -130,7 +130,7 @@
    "weekday": "土",
    "sets": [
     "KY",
-    "CK"
+    "TJ"
    ],
    "minutes": 60,
    "exam": false
@@ -167,7 +167,7 @@
    "date": "2026-12-30",
    "weekday": "水",
    "sets": [
-    "WS"
+    "MP"
    ],
    "minutes": 30,
    "exam": false
@@ -185,7 +185,7 @@
    "date": "2027-01-01",
    "weekday": "金",
    "sets": [
-    "MZ"
+    "CH"
    ],
    "minutes": 30,
    "exam": false
@@ -195,7 +195,7 @@
    "weekday": "土",
    "sets": [
     "KY",
-    "RK"
+    "TJ"
    ],
    "minutes": 60,
    "exam": false
@@ -204,7 +204,7 @@
    "date": "2027-01-03",
    "weekday": "日",
    "sets": [
-    "CH",
+    "HS",
     "G"
    ],
    "minutes": 60,
@@ -232,7 +232,7 @@
    "date": "2027-01-06",
    "weekday": "水",
    "sets": [
-    "HS"
+    "WS"
    ],
    "minutes": 30,
    "exam": false
@@ -250,7 +250,7 @@
    "date": "2027-01-08",
    "weekday": "金",
    "sets": [
-    "MK"
+    "MG"
    ],
    "minutes": 30,
    "exam": false
@@ -260,7 +260,7 @@
    "weekday": "土",
    "sets": [
     "KY",
-    "WH"
+    "TJ"
    ],
    "minutes": 60,
    "exam": false
@@ -269,7 +269,7 @@
    "date": "2027-01-10",
    "weekday": "日",
    "sets": [
-    "CK",
+    "NJ",
     "G"
    ],
    "minutes": 60,
@@ -331,7 +331,7 @@
    "date": "2027-01-17",
    "weekday": "日",
    "sets": [
-    "MZ"
+    "MG"
    ],
    "minutes": 30,
    "exam": false
@@ -340,7 +340,7 @@
    "date": "2027-01-18",
    "weekday": "月",
    "sets": [
-    "WS"
+    "MG"
    ],
    "minutes": 30,
    "exam": false
@@ -349,7 +349,7 @@
    "date": "2027-01-19",
    "weekday": "火",
    "sets": [
-    "WH"
+    "NJ"
    ],
    "minutes": 30,
    "exam": false
@@ -358,7 +358,7 @@
    "date": "2027-01-20",
    "weekday": "水",
    "sets": [
-    "MJ"
+    "MZ"
    ],
    "minutes": 30,
    "exam": false
@@ -367,7 +367,7 @@
    "date": "2027-01-21",
    "weekday": "木",
    "sets": [
-    "CH"
+    "JO"
    ],
    "minutes": 30,
    "exam": false
@@ -376,7 +376,7 @@
    "date": "2027-01-22",
    "weekday": "金",
    "sets": [
-    "CK"
+    "TY"
    ],
    "minutes": 30,
    "exam": false
@@ -385,8 +385,8 @@
    "date": "2027-01-23",
    "weekday": "土",
    "sets": [
-    "HS",
-    "GK"
+    "TJ",
+    "NJ"
    ],
    "minutes": 60,
    "exam": false
@@ -395,8 +395,8 @@
    "date": "2027-01-24",
    "weekday": "日",
    "sets": [
-    "RK",
-    "MZ"
+    "MZ",
+    "JO"
    ],
    "minutes": 60,
    "exam": false
@@ -405,7 +405,7 @@
    "date": "2027-01-25",
    "weekday": "月",
    "sets": [
-    "WS"
+    "GK"
    ],
    "minutes": 30,
    "exam": false
@@ -414,7 +414,7 @@
    "date": "2027-01-26",
    "weekday": "火",
    "sets": [
-    "WH"
+    "MP"
    ],
    "minutes": 30,
    "exam": false
@@ -423,7 +423,7 @@
    "date": "2027-01-27",
    "weekday": "水",
    "sets": [
-    "MK"
+    "CH"
    ],
    "minutes": 30,
    "exam": false
@@ -432,7 +432,7 @@
    "date": "2027-01-28",
    "weekday": "木",
    "sets": [
-    "CH"
+    "HS"
    ],
    "minutes": 30,
    "exam": false
@@ -441,7 +441,7 @@
    "date": "2027-01-29",
    "weekday": "金",
    "sets": [
-    "CK"
+    "WS"
    ],
    "minutes": 30,
    "exam": false
@@ -450,8 +450,8 @@
    "date": "2027-01-30",
    "weekday": "土",
    "sets": [
-    "HS",
-    "GK"
+    "TJ",
+    "MG"
    ],
    "minutes": 60,
    "exam": false
@@ -460,8 +460,8 @@
    "date": "2027-01-31",
    "weekday": "日",
    "sets": [
-    "RK",
-    "RK"
+    "NJ",
+    "TY"
    ],
    "minutes": 60,
    "exam": false
@@ -470,28 +470,28 @@
    "date": "2027-02-01",
    "weekday": "月",
    "sets": [
-    "MZ"
+    "NJ"
    ],
    "minutes": 30,
-   "exam": false
+   "exam": true
   },
   {
    "date": "2027-02-02",
    "weekday": "火",
    "sets": [
-    "GK"
+    "NJ"
    ],
    "minutes": 30,
-   "exam": false
+   "exam": true
   },
   {
    "date": "2027-02-03",
    "weekday": "水",
    "sets": [
-    "RK"
+    "TJ"
    ],
    "minutes": 30,
-   "exam": false
+   "exam": true
   },
   {
    "date": "2027-02-04",
@@ -500,13 +500,13 @@
     "MZ"
    ],
    "minutes": 30,
-   "exam": false
+   "exam": true
   },
   {
    "date": "2027-02-05",
    "weekday": "金",
    "sets": [
-    "RK"
+    "JO"
    ],
    "minutes": 30,
    "exam": true
@@ -515,7 +515,7 @@
    "date": "2027-02-06",
    "weekday": "土",
    "sets": [
-    "HS"
+    "G"
    ],
    "minutes": 30,
    "exam": true
@@ -524,17 +524,16 @@
    "date": "2027-02-07",
    "weekday": "日",
    "sets": [
-    "MJ",
-    "RK"
+    "TY"
    ],
-   "minutes": 60,
-   "exam": false
+   "minutes": 30,
+   "exam": true
   },
   {
    "date": "2027-02-08",
    "weekday": "月",
    "sets": [
-    "CK"
+    "GK"
    ],
    "minutes": 30,
    "exam": true
@@ -543,7 +542,7 @@
    "date": "2027-02-09",
    "weekday": "火",
    "sets": [
-    "GK"
+    "G"
    ],
    "minutes": 30,
    "exam": true
@@ -552,7 +551,7 @@
    "date": "2027-02-10",
    "weekday": "水",
    "sets": [
-    "CH"
+    "MP"
    ],
    "minutes": 30,
    "exam": true
@@ -564,13 +563,13 @@
     "CH"
    ],
    "minutes": 30,
-   "exam": false
+   "exam": true
   },
   {
    "date": "2027-02-12",
    "weekday": "金",
    "sets": [
-    "RK"
+    "HS"
    ],
    "minutes": 30,
    "exam": true
@@ -579,18 +578,20 @@
    "date": "2027-02-13",
    "weekday": "土",
    "sets": [
-    "WH"
+    "HS",
+    "WS"
    ],
-   "minutes": 30,
-   "exam": true
+   "minutes": 60,
+   "exam": false
   },
   {
    "date": "2027-02-14",
    "weekday": "日",
    "sets": [
-    "WH"
+    "HS",
+    "WS"
    ],
-   "minutes": 30,
+   "minutes": 60,
    "exam": false
   },
   {
@@ -600,7 +601,7 @@
     "HS"
    ],
    "minutes": 30,
-   "exam": true
+   "exam": false
   },
   {
    "date": "2027-02-16",
@@ -624,7 +625,7 @@
    "date": "2027-02-18",
    "weekday": "木",
    "sets": [
-    "WH"
+    "WS"
    ],
    "minutes": 30,
    "exam": false
@@ -658,28 +659,53 @@
  "exams": [
   [
    "2027-01-16",
-   "共通テスト",
+   "共通テスト（共テ利用：津田塾・東京女子・日本女子／上智は併用）",
    "共テ"
   ],
   [
+   "2027-02-01",
+   "明治学院 法（全学部日程）",
+   "明学"
+  ],
+  [
+   "2027-02-02",
+   "日本女子 人間社会（1日目）",
+   "日女"
+  ],
+  [
+   "2027-02-03",
+   "日本女子 人間社会（2日目）",
+   "日女"
+  ],
+  [
+   "2027-02-04",
+   "東京女子 社会コミュニケーション",
+   "東女"
+  ],
+  [
    "2027-02-05",
-   "明治 全学部統一",
+   "明治 法（全学部統一）",
    "明治全学部"
   ],
   [
    "2027-02-06",
-   "立教（法）・学習院 法（プラス）",
-   "立教・学習院"
+   "上智 法（TEAPスコア利用）",
+   "上智"
+  ],
+  [
+   "2027-02-07",
+   "青山学院 法（全学部日程・古文なし）",
+   "青学"
   ],
   [
    "2027-02-08",
-   "立教（法）・法政 法（A方式Ⅰ日程）",
-   "立教・法政"
+   "東洋 法（前期）",
+   "東洋"
   ],
   [
    "2027-02-09",
-   "立教（法）・中央 5学部共通",
-   "立教・中央"
+   "上智 法（共通テスト併用・学部試験）",
+   "上智"
   ],
   [
    "2027-02-10",
@@ -687,19 +713,14 @@
    "学習院"
   ],
   [
+   "2027-02-11",
+   "明治 政治経済（学部別）",
+   "明治政経"
+  ],
+  [
    "2027-02-12",
-   "中央 法・立教（法）",
-   "中央法・立教"
-  ],
-  [
-   "2027-02-13",
-   "立教（法）",
-   "立教"
-  ],
-  [
-   "2027-02-15",
-   "早稲田 法",
-   "早稲田法"
+   "中央 法（学部別）",
+   "中央"
   ],
   [
    "2027-02-16",
@@ -708,8 +729,13 @@
   ],
   [
    "2027-02-21",
-   "早稲田 商",
+   "早稲田 商（数学型）",
    "早稲田商"
+  ],
+  [
+   "2027-03-10",
+   "東京女子 現代教養（後期）",
+   "東女後期"
   ]
  ]
 }
