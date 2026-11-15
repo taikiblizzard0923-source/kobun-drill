@@ -36,7 +36,7 @@ window.DRILL_CONFIG = {
   mustTitle: "MARCH受験生ならほぼ全員が正解する問題",
   labelFormat: "今日は{label}の日",
   dataFiles: [],                     // 下で日付から自動生成（data/days/YYYY-MM-DD.js）
-  extraFiles: ["data/must.js", "data/must2.js"],
+  extraFiles: ["data/must.js", "data/must2.js", "data/must3.js"],
   examDayList: [
     "最初に設問と選択肢をざっと見て、何が問われるか（主語・心情・和歌・文学史）をつかむ",
     "本文はリード文と注を先に読む。登場人物に印をつけ、敬語で主語を補いながら読む",
