@@ -515,13 +515,15 @@ function start(){
         const w=document.createElement("div"); w.className="write";
         const ta=document.createElement("textarea"); ta.rows=2; ta.placeholder="ここに答えを書く（メモ。採点は解答例を見て自分で○×）"; ta.value=S.txt[ik]||"";
         ta.addEventListener("input",()=>{ S.txt[ik]=ta.value; save(); }); if(graded) ta.readOnly=true;
-        w.appendChild(ta); item.appendChild(w);
+        w.appendChild(ta);
+        if(!graded){ const h=document.createElement("p"); h.className="note"; h.style.margin="4px 0 0"; h.textContent="✎ 記述：答えを書いたら、セットの最後の「答え合わせ」を押す → 解答例と【採点基準】を見て、自分で ○ か × をつける"; w.appendChild(h); }
+        item.appendChild(w);
         if(graded){
           const ex=document.createElement("div"); ex.className="ex";
           const sv=S.self[ik];
           ex.innerHTML='<p><b class="exh">解答例</b>'+rich(it.ans||"")+'</p>'+(must?'<p><b class="exh must-h">★ なぜ落とせない</b>'+esc(must)+'</p>':'')+'<p>'+exHTML(it.ex);
           const sm=document.createElement("p"); sm.className="selfmark";
-          sm.innerHTML='<span class="note">自己採点：</span>';
+          sm.innerHTML='<span class="note">自己採点（【採点基準】の項目がすべて書けていれば ○、1つでも抜けていたら ×）：</span>';
           [[1,"○ できた"],[0,"× できなかった"]].forEach(([v,t])=>{ const bb=document.createElement("button"); bb.type="button"; bb.className="btn"+(sv===v?" primary":""); bb.textContent=t;
             bb.addEventListener("click",()=>{ S.self[ik]=v; save(); render(set.id); }); sm.appendChild(bb); });
           ex.prepend(sm); item.appendChild(ex);
