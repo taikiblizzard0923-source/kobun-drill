@@ -206,6 +206,14 @@ html{-webkit-text-size-adjust:100%}
 .ja-text .vw .en{font-weight:600}
 .ja-text .passage .src-note{display:block;text-align:right;font-size:.85em;color:var(--muted)}
 .passage u,.qtext u,.ch u{text-decoration:none;border-bottom:1.5px solid var(--print);padding-bottom:1px}
+/* vertical writing (縦書き) for the passage only */
+.passage.vert{writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;height:min(64vh,540px);max-height:none;overflow-x:auto;overflow-y:hidden;line-height:1.9;padding:16px 14px}
+.passage.vert p,.passage.vert h4{margin:0;margin-block-end:1em}
+.passage.vert u{border-bottom:0;border-right:1.5px solid var(--print);padding-bottom:0;padding-right:2px}
+.passage.vert .lbl{text-combine-upright:all;-webkit-text-combine:horizontal;vertical-align:baseline;margin:0 0 2px}
+.passage.vert .src-note{text-align:end;margin-block-start:.5em}
+.vbtn{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:5px 12px;font-size:13px}
+@media (min-width:900px){.split.two .passage.vert{height:calc(100vh - 150px);max-height:none;overflow-x:auto;overflow-y:hidden}}
 .passage .lbl{font-family:var(--f-body);font-size:.72em;color:var(--print);font-weight:700;vertical-align:.35em;margin-right:1px}
 </style>
 <style id="accent"></style>
@@ -278,6 +286,7 @@ function start(){
   try{ S=JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ S={}; }
   S.ans=S.ans||{}; S.graded=S.graded||{}; S.tasks=S.tasks||{};
   function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+  const vertOn=()=> S.vert==null ? !!C.vertical : !!S.vert;
 
   const TODAY=ymd(new Date());
   function fmt(ds){ const d=new Date(ds+"T00:00:00"); return {md:(d.getMonth()+1)+"/"+d.getDate(), w:WK[d.getDay()]}; }
@@ -436,6 +445,9 @@ function start(){
     const body=document.createElement("div"); body.className="setbody";
     if(set.directions){ const p=document.createElement("p"); p.className="dir"; p.textContent=set.directions; p.style.margin="0"; body.appendChild(p); }
     const tb=document.createElement("div"); tb.className="toolbar"; tb.appendChild(timerUI(k,set.limitMin)); body.appendChild(tb);
+    if(set.passage && C.lang==="ja"){ const vb=document.createElement("button"); vb.type="button"; vb.className="vbtn";
+      vb.textContent=vertOn()?"横書きにする":"縦書きにする";
+      vb.addEventListener("click",()=>{ S.vert=vertOn()?0:1; save(); render(set.id); }); tb.appendChild(vb); }
 
     const hasSrc = !!(set.table||set.passage||set.script);
     const split=document.createElement("div"); split.className="split"+(hasSrc?" two":"");
@@ -449,7 +461,7 @@ function start(){
       src.appendChild(w);
     }
     if(set.passage){
-      const p=document.createElement("div"); p.className="passage";
+      const p=document.createElement("div"); p.className="passage"+(vertOn()?" vert":"");
       p.innerHTML=paras(set.passage);
       src.appendChild(p);
       if(graded && set.passageJa) src.appendChild(jaBox(set.passageJa));

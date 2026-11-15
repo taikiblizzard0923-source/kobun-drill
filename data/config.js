@@ -8,6 +8,7 @@ window.DRILL_CONFIG = {
   end: "2026-12-13",                 // ドリル最終日
   examDate: "2027-02-01",            // 本番の日（残り日数の計算。範囲外でもよい）
   examLabel: "本番まで",
+  vertical: true,                    // 本文を縦書きで表示（画面のボタンで横書きに切替可）
   lang: "ja",                        // "ja" なら本文・選択肢を明朝体で表示（"en" は英文向けのセリフ体）
   accent: { light: "#a8323e", soft: "#f8e4e4", dark: "#ef8f95", darkSoft: "#3b2023" }, // 省略可（省略時は桜色）
   skills: {                          // セットの skill キー → 表示ラベルと色（tone: accent | blue | ink）
