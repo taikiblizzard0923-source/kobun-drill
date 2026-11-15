@@ -8,9 +8,9 @@ const D=window.DRILL.days;
 if(mode==='export'){let o='';
  for(const k of Object.keys(D).sort()) for(const s of D[k].sets){
   o+='\n==== '+k+'|'+s.id+' '+s.title+'\n'+(s.directions||'')+'\n'+(s.passage?'---本文---\n'+s.passage+'\n---\n':'');
-  s.items.forEach((it,i)=>{o+='['+k+'|'+s.id+'|'+i+'] '+it.q+'\n'+it.choices.map((c,j)=>'  '+(j+1)+'. '+c).join('\n')+'\n';});}
+  s.items.forEach((it,i)=>{ if(it.type==='write'){ o+='[記述・回答不要] '+it.q+'\n'; return; } o+='['+k+'|'+s.id+'|'+i+'] '+it.q+'\n'+it.choices.map((c,j)=>'  '+(j+1)+'. '+c).join('\n')+'\n';});}
  fs.writeFileSync(io,o);console.log('wrote',io);}
 else{const A=JSON.parse(fs.readFileSync(io,'utf8'));let n=0,ok=0;const bad=[];
- for(const k of Object.keys(D).sort()) for(const s of D[k].sets) s.items.forEach((it,i)=>{const key=k+'|'+s.id+'|'+i;n++;
+ for(const k of Object.keys(D).sort()) for(const s of D[k].sets) s.items.forEach((it,i)=>{ if(it.type==='write') return; const key=k+'|'+s.id+'|'+i;n++;
   if(A[key]===it.a+1) ok++; else bad.push(key+' key='+(it.a+1)+' blind='+A[key]);});
  console.log('match',ok+'/'+n);console.log(bad.join('\n'));}

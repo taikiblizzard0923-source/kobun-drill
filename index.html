@@ -194,6 +194,12 @@ html{-webkit-text-size-adjust:100%}
   .split.two .src{position:sticky;top:calc(env(safe-area-inset-top,0px) + 8px);max-height:calc(100vh - 24px);overflow:auto;-webkit-overflow-scrolling:touch;padding-right:4px}
   .split.two .passage{max-height:none;overflow:visible}
 }
+.write textarea{width:100%;font:inherit;font-size:16px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--sheet);color:var(--ink);margin-left:0}
+.item .write{padding-left:36px}
+.selfmark{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.selfmark .btn{padding:4px 12px;font-size:13px}
+.vw.rev{border-style:dashed}
+.examday h3{color:var(--print)!important}
 .player{display:flex;flex-direction:column;gap:2px;width:100%;max-width:520px}
 .player audio{width:100%;height:40px}
 .pending{background:var(--sheet);border:1px dashed var(--line);border-radius:10px;padding:24px 16px;color:var(--muted);text-align:center}
@@ -258,7 +264,9 @@ function start(){
   DRILL.days = DRILL.days || {};
   const META = C.days || {};
   const SKILLS = C.skills || { R:{label:"READING",tone:"blue"}, L:{label:"LISTENING",tone:"accent"} };
-  const EXAM = C.examDate || "";
+  const EXAMS = (C.exams && C.exams.length ? C.exams : (C.examDate ? [{date:C.examDate,label:"本番"}] : [])).slice().sort((a,b)=>a.date<b.date?-1:1);
+  const examsOn = ds => EXAMS.filter(e=>e.date===ds);
+  const EXAM = EXAMS.length ? EXAMS[EXAMS.length-1].date : "";
   const DAYS = [];
   for(let d=new Date(C.start+"T00:00:00"); d<=new Date(C.end+"T00:00:00"); d.setDate(d.getDate()+1)) DAYS.push(ymd(d));
   if(EXAM && !DAYS.includes(EXAM)){ const last=new Date(C.end+"T00:00:00"); last.setDate(last.getDate()+1); if(ymd(last)===EXAM) DAYS.push(EXAM); }
@@ -284,7 +292,7 @@ function start(){
   const KEY="drill-"+(C.id||"default")+"-v1";
   let S={};
   try{ S=JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ S={}; }
-  S.ans=S.ans||{}; S.graded=S.graded||{}; S.tasks=S.tasks||{};
+  S.ans=S.ans||{}; S.graded=S.graded||{}; S.tasks=S.tasks||{}; S.self=S.self||{}; S.txt=S.txt||{};
   function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
   const vertOn=()=> S.vert==null ? !!C.vertical : !!S.vert;
 
@@ -296,11 +304,13 @@ function start(){
   function paras(text){ return String(text).split(/\n\n+/).map(par=>{ const m=par.match(/^#\s*(.+)$/); if(m) return '<h4>'+rich(m[1])+'</h4>';
     const n=par.match(/^（出典[：:]?(.+)）$/)||par.match(/^\((出典.+)\)$/); return n?'<span class="src-note">'+esc(par)+'</span>':'<p>'+rich(par)+'</p>'; }).join(""); }
 
+  // an item is correct if the chosen index matches, or (written items) the learner self-marked it ○
+  function isOk(it,ik){ return it.type==="write" ? S.self[ik]===1 : S.ans[ik]===it.a; }
   function dayStats(ds){
     const day=DRILL.days[ds]; if(!day) return null;
     let total=0,correct=0,gradedSets=0;
     (day.sets||[]).forEach(s=>{ const k=ds+"|"+s.id; if(S.graded[k]){ gradedSets++; total+=s.items.length;
-      s.items.forEach((it,i)=>{ if(S.ans[k+"|"+i]===it.a) correct++; }); }});
+      s.items.forEach((it,i)=>{ if(isOk(it,k+"|"+i)) correct++; }); }});
     const taskDone=(day.tasks||[]).filter((t,i)=>S.tasks[ds+"|"+i]).length;
     const allSets=(day.sets||[]).length;
     return {total,correct,gradedSets,allSets,taskDone,allTasks:(day.tasks||[]).length,
@@ -310,8 +320,11 @@ function start(){
   // ---- header ----
   function renderHead(){
     const el=document.getElementById("left");
-    if(EXAM){ const left=Math.round((new Date(EXAM+"T00:00:00")-new Date(TODAY+"T00:00:00"))/86400000);
-      el.textContent = left>0 ? left+"日" : (left===0?"今日":"終了"); } else el.parentNode.hidden=true;
+    const nx=EXAMS.find(e=>e.date>=TODAY);
+    if(nx){ const left=Math.round((new Date(nx.date+"T00:00:00")-new Date(TODAY+"T00:00:00"))/86400000);
+      el.textContent = left>0 ? left+"日" : "今日";
+      document.getElementById("leftlabel").textContent = EXAMS.length>1 ? (nx.short||nx.label)+"まで" : (C.examLabel||"本番まで"); }
+    else if(EXAMS.length){ el.textContent="終了"; } else el.parentNode.hidden=true;
     document.getElementById("donecount").textContent = DAYS.filter(d=>{const s=dayStats(d);return s&&s.done;}).length;
   }
 
@@ -326,10 +339,10 @@ function start(){
     DAYS.forEach(ds=>{
       const f=fmt(ds), st=dayStats(ds);
       const b=document.createElement("button");
-      b.className="chip"+(ds===TODAY?" today":"")+(ds===current?" sel":"")+(st&&st.done?" done":"")+(ds===EXAM?" exam":"");
+      b.className="chip"+(ds===TODAY?" today":"")+(ds===current?" sel":"")+(st&&st.done?" done":"")+(examsOn(ds).length?" exam":"");
       b.type="button";
       let s="";
-      if(ds===EXAM) s="本番";
+      if(examsOn(ds).length && !(st&&st.total)) s="本番";
       else if(st&&st.total) s=Math.round(st.correct/st.total*100)+"%";
       else if(st&&st.done) s="済";
       const lb=META[ds]&&META[ds].label;
@@ -439,7 +452,7 @@ function start(){
     const k=ds+"|"+set.id;
     const graded=!!S.graded[k];
     const det=document.createElement("details"); det.className="set"; det.open=openIdx;
-    const correct=set.items.filter((it,i)=>S.ans[k+"|"+i]===it.a).length;
+    const correct=set.items.filter((it,i)=>isOk(it,k+"|"+i)).length;
     det.innerHTML='<summary><span class="t">'+skillTag(set.skill)+esc(set.title)+'</span>'+
       '<span class="r'+(graded&&correct/set.items.length>=0.7?" ok":"")+'">'+(graded?(correct+" / "+set.items.length):(set.items.length+"問"+(set.limitMin?" · "+set.limitMin+"分":"")))+'</span></summary>';
     const body=document.createElement("div"); body.className="setbody";
@@ -484,12 +497,31 @@ function start(){
       const must = MUST[ik];
       q.innerHTML='<span class="qno">'+(i+1)+'</span><span class="qtext">'+(must?'<span class="must" title="'+esc(C.mustTitle||"")+'">★ 落とせない</span>':'')+rich(it.q)+'</span>';
       item.appendChild(q);
+      const LB = set.labels==="iroha" ? "イロハニホヘトチ" : set.labels==="abc" ? "ABCDEFGH" : set.labels==="aiu" ? "アイウエオカキク" : null;
+      const lb = ci => LB ? LB[ci] : String(ci+1);
+      if(it.type==="write"){
+        const w=document.createElement("div"); w.className="write";
+        const ta=document.createElement("textarea"); ta.rows=2; ta.placeholder="ここに答えを書く（メモ。採点は解答例を見て自分で○×）"; ta.value=S.txt[ik]||"";
+        ta.addEventListener("input",()=>{ S.txt[ik]=ta.value; save(); }); if(graded) ta.readOnly=true;
+        w.appendChild(ta); item.appendChild(w);
+        if(graded){
+          const ex=document.createElement("div"); ex.className="ex";
+          const sv=S.self[ik];
+          ex.innerHTML='<p><b class="exh">解答例</b>'+rich(it.ans||"")+'</p>'+(must?'<p><b class="exh must-h">★ なぜ落とせない</b>'+esc(must)+'</p>':'')+'<p>'+exHTML(it.ex);
+          const sm=document.createElement("p"); sm.className="selfmark";
+          sm.innerHTML='<span class="note">自己採点：</span>';
+          [[1,"○ できた"],[0,"× できなかった"]].forEach(([v,t])=>{ const bb=document.createElement("button"); bb.type="button"; bb.className="btn"+(sv===v?" primary":""); bb.textContent=t;
+            bb.addEventListener("click",()=>{ S.self[ik]=v; save(); render(set.id); }); sm.appendChild(bb); });
+          ex.prepend(sm); item.appendChild(ex);
+        }
+        qs.appendChild(item); return;
+      }
       const cs=document.createElement("div"); cs.className="choices"; cs.setAttribute("role","radiogroup");
       it.choices.forEach((c,ci)=>{
         const b=document.createElement("button"); b.type="button";
         b.className="ch"+(sel===ci?" on":"")+(graded&&ci===it.a?" correct":"")+(graded&&sel===ci&&ci!==it.a?" wrong":"");
         b.setAttribute("role","radio"); b.setAttribute("aria-checked",sel===ci?"true":"false");
-        b.innerHTML='<span class="oval">'+(ci+1)+'</span><span class="ctext">'+rich(c)+'</span>';
+        b.innerHTML='<span class="oval">'+lb(ci)+'</span><span class="ctext">'+rich(c)+'</span>';
         if(!graded) b.addEventListener("click",()=>{ S.ans[ik]=ci; save();
           cs.querySelectorAll(".ch").forEach((x,xi)=>{ x.classList.toggle("on",xi===ci); x.setAttribute("aria-checked",xi===ci?"true":"false"); }); });
         cs.appendChild(b);
@@ -498,7 +530,7 @@ function start(){
       if(graded){
         const ok=sel===it.a;
         const ex=document.createElement("div"); ex.className="ex";
-        ex.innerHTML='<p><span class="mark '+(ok?"ok":"ng")+'">'+(ok?"正解":"不正解 · 正解は "+(it.a+1))+'</span>'+
+        ex.innerHTML='<p><span class="mark '+(ok?"ok":"ng")+'">'+(ok?"正解":"不正解 · 正解は "+lb(it.a))+'</span>'+
           (must&&!ok?' <span class="must-miss">★落とせない問題です。解説を読んで、明日もう一度解き直しましょう</span>':'')+'</p>'+
           (must?'<p><b class="exh must-h">★ なぜ落とせない</b>'+esc(must)+'</p>':'')+'<p>'+exHTML(it.ex);
         item.appendChild(ex);
@@ -512,7 +544,7 @@ function start(){
       const g=document.createElement("button"); g.type="button"; g.className="btn primary"; g.textContent="答え合わせ";
       const msg=document.createElement("span"); msg.className="note";
       g.addEventListener("click",()=>{
-        const blank=set.items.filter((it,i)=>S.ans[k+"|"+i]==null).length;
+        const blank=set.items.filter((it,i)=>it.type!=="write"&&S.ans[k+"|"+i]==null).length;
         if(blank && g.dataset.confirm!=="1"){ msg.textContent="未回答が"+blank+"問あります。もう一度押すと採点します。"; g.dataset.confirm="1"; return; }
         stopSpeak(); if(timers[k]){ clearInterval(timers[k].id); delete timers[k]; }
         S.graded[k]=Date.now(); save(); render(set.id);
@@ -521,11 +553,12 @@ function start(){
     }else{
       const res=document.createElement("div"); res.className="result";
       const mk=set.items.map((it,i)=>k+"|"+i).filter(x=>MUST[x]);
-      const mOk=mk.filter(x=>S.ans[x]===set.items[+x.split("|").pop()].a).length;
+      const mOk=mk.filter(x=>isOk(set.items[+x.split("|").pop()],x)).length;
       res.innerHTML='<b>'+correct+' / '+set.items.length+'</b><span>正答率 '+Math.round(correct/set.items.length*100)+'%'+(C.passNote?'（'+esc(C.passNote)+'）':'')+
         (mk.length?'<br><span class="must">★</span> 落とせない問題 '+mOk+' / '+mk.length+(mOk===mk.length?' 全問正解！':' ← ここを全部取るのが最優先'):'')+'</span>';
       const r=document.createElement("button"); r.type="button"; r.className="btn"; r.textContent="解き直す";
-      r.addEventListener("click",()=>{ delete S.graded[k]; set.items.forEach((it,i)=>delete S.ans[k+"|"+i]); save(); render(set.id); });
+      r.addEventListener("click",()=>{ delete S.graded[k]; set.items.forEach((it,i)=>{ delete S.ans[k+"|"+i]; delete S.self[k+"|"+i]; delete S.txt[k+"|"+i]; }); save(); render(set.id); });
+      if(set.items.some((it,i)=>it.type==="write"&&S.self[k+"|"+i]==null)){ const n=document.createElement("span"); n.className="note"; n.textContent="記述問題は解答例を見て○×をつけると点数に入ります。"; res.appendChild(n); }
       res.appendChild(r); act.appendChild(res);
     }
     qs.appendChild(act);
@@ -535,21 +568,33 @@ function start(){
     return det;
   }
 
+  // spaced review: config.vocabReview words drawn from earlier days (1,3,7,14,28 days back first, then the rest), deterministic per date
+  function reviewWords(ds, nNew){
+    const want=(C.vocabReview||0); if(!want || ds<(C.vocabReviewFrom||"")) return [];
+    const i=DAYS.indexOf(ds), seen=new Set(), out=[];
+    const push=d=>{ const dd=DRILL.days[d]; if(!dd||!dd.vocab) return; const vs=dd.vocab.slice();
+      let h=0; for(const c of ds) h=(h*31+c.charCodeAt(0))>>>0;
+      for(let j=0;j<vs.length && out.length<want;j++){ const v=vs[(j+h)%vs.length]; if(!seen.has(v[0])){ seen.add(v[0]); out.push([v[0],v[1],"rev"]); if(out.length%2===0) break; } } };
+    [1,3,7,14,28,42,56].forEach(b=>{ if(i-b>=0) push(DAYS[i-b]); });
+    for(let b=2;out.length<want && i-b>=0;b++) push(DAYS[i-b]);
+    return out.slice(0,want);
+  }
+
   // ---- render day ----
   function render(openSet){
     stopSpeak();
     renderHead(); renderStrip();
     const main=document.getElementById("day"); main.innerHTML="";
-    const f=fmt(current), day=DRILL.days[current], meta=META[current]||{};
+    const f=fmt(current), day=DRILL.days[current], meta=Object.assign({}, META[current]||{}, day&&day.cheer?{cheer:day.cheer}:{}), ex=examsOn(current);
     const head=document.createElement("div"); head.className="dayhead";
     const idx=DAYS.indexOf(current)+1, lab=labelOf(current);
     head.innerHTML=(lab?'<span class="oshi">'+esc(lab)+'</span>':'')+(meta.cheer?'<p class="cheer">'+esc(meta.cheer)+'</p>':'')+'<span class="meta">'+f.md+'（'+f.w+'）· Day '+idx+(day&&day.minutes?' · 目安 '+day.minutes+'分':'')+'</span><h2>'+esc(day&&day.theme?day.theme:(meta.plan||""))+'</h2>';
     main.appendChild(head);
 
-    if(current===EXAM && !day){
-      const p=document.createElement("section"); p.className="block";
-      p.innerHTML='<h3>本番で守ること</h3><ul class="tasks">'+(C.examDayList||[]).map(t=>'<li style="grid-template-columns:1fr"><span class="txt">'+esc(t)+'</span></li>').join("")+'</ul>';
-      main.appendChild(p); return;
+    if(ex.length){
+      const p=document.createElement("section"); p.className="block examday";
+      p.innerHTML='<h3><span>本番：'+ex.map(e=>esc(e.label)).join("／")+'</span></h3><ul class="tasks">'+ex.reduce((a,e)=>a.concat(e.list||[]),[]).concat(C.examDayList||[]).map(t=>'<li style="grid-template-columns:1fr"><span class="txt">'+esc(t)+'</span></li>').join("")+'</ul>';
+      main.appendChild(p); if(!day) return;
     }
     if(!day){ const p=document.createElement("div"); p.className="pending"; p.textContent="この日の問題は準備中です。"; main.appendChild(p); return; }
 
@@ -567,13 +612,15 @@ function start(){
     ts.appendChild(ul); main.appendChild(ts);
 
     // vocab
-    if(day.vocab&&day.vocab.length){
+    const review = reviewWords(current, (day.vocab||[]).length);
+    const vlist = (day.vocab||[]).map(v=>v.concat("new")).concat(review);
+    if(vlist.length){
       const vs=document.createElement("section"); vs.className="block";
-      vs.innerHTML='<h3><span>'+esc(C.vocabLabel||"今日の語彙")+' '+day.vocab.length+'語（タップで意味）</span></h3>';
+      vs.innerHTML='<h3><span>'+esc(C.vocabLabel||"今日の語彙")+' '+vlist.length+'語（タップで意味）'+(review.length?'· 新'+(day.vocab||[]).length+'＋復習'+review.length:'')+'</span></h3>';
       const all=document.createElement("button"); all.type="button"; all.className="small-btn"; all.textContent="全部表示";
       vs.querySelector("h3").appendChild(all);
       const g=document.createElement("div"); g.className="vocab";
-      day.vocab.forEach(v=>{ const b=document.createElement("button"); b.type="button"; b.className="vw";
+      vlist.forEach(v=>{ const b=document.createElement("button"); b.type="button"; b.className="vw"+(v[2]==="rev"?" rev":"");
         b.innerHTML='<span class="en">'+esc(v[0])+'</span><span class="ja">'+esc(v[1])+'</span>';
         b.addEventListener("click",()=>b.classList.toggle("open")); g.appendChild(b); });
       all.addEventListener("click",()=>{ const open=all.textContent==="全部表示"; g.querySelectorAll(".vw").forEach(x=>x.classList.toggle("open",open)); all.textContent=open?"全部隠す":"全部表示"; });
