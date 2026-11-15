@@ -200,6 +200,8 @@ html{-webkit-text-size-adjust:100%}
 .selfmark .btn{padding:4px 12px;font-size:13px}
 .vw.rev{border-style:dashed}
 .examday h3{color:var(--print)!important}
+.guidelink{display:flex;justify-content:space-between;align-items:center;margin-top:10px;border:1px solid var(--print);border-radius:10px;padding:10px 14px;color:var(--print);font-weight:700;font-size:14px;text-decoration:none;background:var(--sheet)}
+.guidelink::after{content:"→"}
 .player{display:flex;flex-direction:column;gap:2px;width:100%;max-width:520px}
 .player audio{width:100%;height:40px}
 .pending{background:var(--sheet);border:1px dashed var(--line);border-radius:10px;padding:24px 16px;color:var(--muted);text-align:center}
@@ -242,6 +244,7 @@ html{-webkit-text-size-adjust:100%}
     <div class="guide-body" id="guidebody"></div>
   </details>
 
+  <a class="guidelink" id="guidelink" hidden></a>
   <nav class="strip" id="strip" aria-label="日付"></nav>
   <main id="day"></main>
 
@@ -281,6 +284,7 @@ function start(){
   document.getElementById("foot").textContent = C.foot || "";
   const mt=document.createElement("meta"); mt.name="apple-mobile-web-app-title"; mt.content=C.title||""; document.head.appendChild(mt);
   if(C.guideHTML){ const g=document.getElementById("guide"); g.hidden=false; document.getElementById("guidetitle").textContent=C.guideTitle||"攻略メモ"; document.getElementById("guidebody").innerHTML=C.guideHTML; }
+  if(C.guidePage){ const gl=document.getElementById("guidelink"); gl.hidden=false; gl.href=C.guidePage; gl.textContent=C.guidePageLabel||"入試方式ガイド"; }
   if(C.lang==="ja") document.body.classList.add("ja-text");
   if(C.accent){ const a=C.accent, v=(p,s)=>"--print:"+p+";--print-soft:"+s+";";
     document.getElementById("accent").textContent=":root{"+v(a.light,a.soft)+"}"+

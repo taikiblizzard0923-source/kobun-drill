@@ -29,6 +29,7 @@ window.DRILL_CONFIG = {
     WH: { label: "早稲田 法", tone: "ink" },
     WS: { label: "早稲田 商", tone: "ink" }
   },
+  guidePage: "guide.html", guidePageLabel: "入試方式ガイド：形式・過去の出典・必要な得点・準備すること",
   vocabLabel: "今日の古文単語",
   translationLabel: "現代語訳を表示",
   passNote: "正答率7割が合格ラインの目安（推定）",

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>入試方式ガイド</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#fdf8f9; --sheet:#ffffff; --ink:#1f1a24; --muted:#6b6270; --line:#eddfe4;
+  --print:#a8323e; --print-soft:#f8e4e4; --blue:#4b4766; --blue-soft:#ecebf3; --ok:#2f7a5a; --ok-soft:#e0f0e8;
+  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#141117; --sheet:#1c181f; --ink:#f1e9ee; --muted:#a99fac; --line:#352d36;
+  --print:#ef8f95; --print-soft:#3b2023; --blue:#b9b4dd; --blue-soft:#25223a; --ok:#6cc59c; --ok-soft:#1a3129; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#141117; --sheet:#1c181f; --ink:#f1e9ee; --muted:#a99fac; --line:#352d36;
+  --print:#ef8f95; --print-soft:#3b2023; --blue:#b9b4dd; --blue-soft:#25223a; --ok:#6cc59c; --ok-soft:#1a3129; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75}
+.wrap{max-width:1100px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 80px max(16px,env(safe-area-inset-left,0px))}
+a{color:var(--print)}
+.top{border-bottom:2px solid var(--print);padding-bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.top h1{font-family:var(--f-display);font-weight:400;font-size:28px;line-height:1.2;margin:2px 0 0}
+.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--print);font-weight:700}
+.back{border:1px solid var(--ink);border-radius:999px;padding:6px 14px;text-decoration:none;color:var(--ink);font-size:14px;white-space:nowrap}
+.lead{color:var(--muted);font-size:14px;margin:12px 0 4px}
+/* index of exams */
+.toc{display:flex;gap:6px;overflow-x:auto;padding:12px 2px;scrollbar-width:thin}
+.toc a{flex:0 0 auto;border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:6px 10px;text-decoration:none;color:var(--ink);font-size:13px;line-height:1.35;display:flex;flex-direction:column;min-width:96px}
+.toc a b{font-variant-numeric:tabular-nums;color:var(--print);font-size:12px}
+.toc a.past{opacity:.55}
+/* exam card */
+.exam{background:var(--sheet);border:1px solid var(--line);border-radius:12px;margin-top:18px;padding:16px 18px;scroll-margin-top:12px}
+.ehead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:10px}
+.ehead h2{font-family:var(--f-display);font-weight:600;font-size:22px;margin:0;line-height:1.3}
+.ehead .m{font-size:14px;color:var(--muted);display:block;font-family:var(--f-body);font-weight:400}
+.when{text-align:right;font-variant-numeric:tabular-nums}
+.when b{font-family:var(--f-display);font-weight:400;font-size:24px;color:var(--print)}
+.when span{display:block;font-size:12px;color:var(--muted)}
+.target{margin:12px 0 0;background:var(--print-soft);border-radius:8px;padding:10px 14px}
+.target .k{font-size:12px;font-weight:700;color:var(--print);letter-spacing:.06em;display:block}
+.grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+@media (min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+.sec h3{margin:0 0 4px;font-size:13px;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.sec p{margin:0}
+.sec ul{margin:0;padding-left:1.2em}
+.sec li{margin:2px 0}
+.prep li::marker{color:var(--print)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--blue-soft);color:var(--blue);border-radius:4px;padding:1px 8px;font-size:13px}
+.drill{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.drill a{border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:13px;text-decoration:none;font-variant-numeric:tabular-nums}
+.note{font-size:12px;color:var(--muted)}
+.links a{font-size:13px;display:inline-block;margin-right:10px;word-break:break-all}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><span class="eyebrow">学習の前に相手を知る</span><h1>入試方式ガイド（古文）</h1></div>
+    <a class="back" href="index.html">← ドリルに戻る</a>
+  </header>
+  <p class="lead">国語・数学・英語で受けられる方式のうち、古文が出るものを試験日順に並べています。形式・近年の出典・必要な得点・準備することをまとめ、確信度と出典を付けました。過去問そのものは載せていません。</p>
+  <nav class="toc" id="toc" aria-label="入試方式"></nav>
+  <main id="list"></main>
+  <p class="note" id="upd"></p>
+</div>
+<script src="data/config.js"></script>
+<script>
+(function(){
+  const C = window.DRILL_CONFIG || {};
+  const files = (C.dataFiles||[]).concat(["data/guide.js"]);
+  let pending = files.length;
+  files.forEach(f=>{ const s=document.createElement("script"); s.src=f; s.async=false; s.onload=s.onerror=()=>{ if(--pending===0) start(); }; document.body.appendChild(s); });
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+  function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function md(ds){ const d=new Date(ds+"T00:00:00"); return (d.getMonth()+1)+"/"+d.getDate()+"（"+"日月火水木金土"[d.getDay()]+"）"; }
+  function start(){
+    const G = window.DRILL_GUIDE, D = (window.DRILL||{days:{}}).days, today = ymd(new Date());
+    const list=document.getElementById("list"), toc=document.getElementById("toc");
+    if(!G||!G.exams){ list.innerHTML='<p class="empty">ガイドのデータを読み込めませんでした。</p>'; return; }
+    const ex = G.exams.slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+    ex.forEach(e=>{
+      const left=Math.round((new Date(e.date+"T00:00:00")-new Date(today+"T00:00:00"))/86400000);
+      const t=document.createElement("a"); t.href="#"+e.id; if(left<0) t.className="past";
+      t.innerHTML='<b>'+md(e.date)+'</b>'+esc(e.name); toc.appendChild(t);
+      const drillDays=Object.keys(D).sort().filter(d=>(D[d].sets||[]).some(s=>s.skill===e.drillKey));
+      const sec=(h,body,cls)=>body?'<div class="sec'+(cls?" "+cls:"")+'"><h3>'+h+'</h3>'+body+'</div>':'';
+      const ul=a=>a&&a.length?'<ul>'+a.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':'';
+      const card=document.createElement("article"); card.className="exam"; card.id=e.id;
+      card.innerHTML=
+        '<div class="ehead"><h2>'+esc(e.name)+'<span class="m">'+esc(e.method||"")+'</span></h2>'+
+        '<div class="when"><b>'+md(e.date)+'</b><span>'+(left>0?'あと'+left+'日':left===0?'今日':'終了')+(e.dateNote?' · '+esc(e.dateNote):'')+'</span></div></div>'+
+        (e.target?'<div class="target"><span class="k">何点必要か</span>'+esc(e.target)+'</div>':'')+
+        '<div class="grid">'+
+          sec("国語の中の古文",'<p>'+esc(e.paper)+'</p>')+
+          sec("時間配分",e.timePlan?'<p>'+esc(e.timePlan)+'</p>':'')+
+          sec("本文",'<p>'+esc(e.passage)+'</p>')+
+          sec("近年の出典",e.sources&&e.sources.length?'<div class="chips">'+e.sources.map(x=>'<span class="chip">'+esc(x)+'</span>').join("")+'</div>':'<p class="note">未確認</p>')+
+          sec("設問の形式",'<p>'+esc(e.questions)+'</p>')+
+          sec("特徴",ul(e.features))+
+          sec("準備しておくこと",ul(e.prepare),"prep")+
+          sec("この型のドリル",drillDays.length?'<div class="drill">'+drillDays.map(d=>'<a href="index.html#d'+d.replace(/-/g,"")+'">'+md(d)+'</a>').join("")+'</div>':'<p class="note">なし</p>')+
+        '</div>'+
+        '<p class="note" style="margin-top:12px">確信度：'+esc(e.confidence||"")+'</p>'+
+        (e.links&&e.links.length?'<p class="links">'+e.links.map(l=>'<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.t)+'</a>').join("")+'</p>':'');
+      list.appendChild(card);
+    });
+    document.getElementById("upd").textContent="情報は "+(G.updated||"")+" 時点の調査メモ（docs/research）にもとづきます。日程・形式は出願前に各大学の公式要項で確認してください。";
+    if(location.hash){ const el=document.getElementById(location.hash.slice(1)); if(el) el.scrollIntoView(); }
+  }
+})();
+</script>
+</body>
+</html>
