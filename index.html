@@ -272,7 +272,7 @@ function start(){
   const EXAM = EXAMS.length ? EXAMS[EXAMS.length-1].date : "";
   const DAYS = [];
   for(let d=new Date(C.start+"T00:00:00"); d<=new Date(C.end+"T00:00:00"); d.setDate(d.getDate()+1)) DAYS.push(ymd(d));
-  if(EXAM && !DAYS.includes(EXAM)){ const last=new Date(C.end+"T00:00:00"); last.setDate(last.getDate()+1); if(ymd(last)===EXAM) DAYS.push(EXAM); }
+  EXAMS.forEach(e=>{ if(e.date>C.end && !DAYS.includes(e.date)) DAYS.push(e.date); }); // exam days after the last drill day still get a chip
   const WK = ["日","月","火","水","木","金","土"];
   function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 
