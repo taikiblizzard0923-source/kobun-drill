@@ -349,7 +349,7 @@ function start(){
       if(examsOn(ds).length && !(st&&st.total)) s="本番";
       else if(st&&st.total) s=Math.round(st.correct/st.total*100)+"%";
       else if(st&&st.done) s="済";
-      const lb=META[ds]&&META[ds].label;
+      const lb=(C.oshi&&C.oshi[ds]) ? C.oshi[ds].slice(0,2) : (META[ds]&&META[ds].label);
       b.innerHTML='<span class="d">'+f.md+'</span><span class="w">'+(ds===TODAY?"今日":f.w)+'</span>'+(lb?'<span class="o">'+esc(shortLabel(lb))+'</span>':'')+'<span class="s">'+s+'</span>';
       b.setAttribute("aria-current", ds===current?"date":"false");
       b.addEventListener("click",()=>{ current=ds; history.replaceState(null,"","#d"+ds.replace(/-/g,"")); render(); });
@@ -592,7 +592,8 @@ function start(){
     const f=fmt(current), day=DRILL.days[current], meta=Object.assign({}, META[current]||{}, day&&day.cheer?{cheer:day.cheer}:{}), ex=examsOn(current);
     const head=document.createElement("div"); head.className="dayhead";
     const idx=DAYS.indexOf(current)+1, lab=labelOf(current);
-    head.innerHTML=(lab?'<span class="oshi">'+esc(lab)+'</span>':'')+(meta.cheer?'<p class="cheer">'+esc(meta.cheer)+'</p>':'')+'<span class="meta">'+f.md+'（'+f.w+'）· Day '+idx+(day&&day.minutes?' · 目安 '+day.minutes+'分':'')+'</span><h2>'+esc(day&&day.theme?day.theme:(meta.plan||""))+'</h2>';
+    const on=C.oshi&&C.oshi[current];
+    head.innerHTML=(on?'<span class="oshi">'+esc((C.oshiFormat||"今日は{name}の日").split("{name}")[0])+'<b>'+esc(on)+'</b>'+esc((C.oshiFormat||"今日は{name}の日").split("{name}")[1]||"")+'</span>':(lab?'<span class="oshi">'+esc(lab)+'</span>':''))+(meta.cheer?'<p class="cheer">'+esc(meta.cheer)+'</p>':'')+'<span class="meta">'+f.md+'（'+f.w+'）· Day '+idx+(day&&day.minutes?' · 目安 '+day.minutes+'分':'')+(on&&lab?' · '+esc(lab):'')+'</span><h2>'+esc(day&&day.theme?day.theme:(meta.plan||""))+'</h2>';
     main.appendChild(head);
 
     if(ex.length){
