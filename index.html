@@ -231,6 +231,11 @@ html{-webkit-text-size-adjust:100%}
 .passage.vert .lbl{text-combine-upright:all;-webkit-text-combine:horizontal;vertical-align:baseline;margin:0 0 2px}
 .passage.vert .src-note{text-align:end;margin-block-start:.5em}
 .vbtn{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:5px 12px;font-size:13px}
+.kvs{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin:6px 0}
+.kv{display:flex;flex-direction:column;align-items:center;border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:6px 8px}
+.kv b{font-family:var(--f-body);font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;writing-mode:horizontal-tb}
+.kvt{writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;font-family:var(--f-text-ja);font-size:1.05em;line-height:1.9;max-height:14em}
+.kvn{align-self:center;font-size:.9em;color:var(--muted)}
 .vbtn.on{background:var(--print);border-color:var(--print);color:#fff}
 .pin{position:relative}
 .ink{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
@@ -514,6 +519,16 @@ function start(){
     if(window.ResizeObserver) new ResizeObserver(()=>size()).observe(pin); else window.addEventListener("resize",size);
   }
 
+  // question text; kanbun examples ("白文：…／書き下し文：…") are shown in vertical boxes
+  function qHTML(q){
+    q=String(q||""); if(!/(白文|書き下し文)[：:]/.test(q)) return rich(q);
+    return q.split("\n").map(line=>{
+      if(!/(白文|書き下し文)[：:]/.test(line)) return rich(line);
+      return '<span class="kvs">'+line.split(/／/).map(seg=>{ const m=seg.match(/^\s*(白文|書き下し文)[：:]\s*([\s\S]*)$/);
+        return m?'<span class="kv"><b>'+m[1]+'</b><span class="kvt">'+rich(m[2])+'</span></span>':'<span class="kvn">'+rich(seg)+'</span>'; }).join("")+'</span>';
+    }).join("<br>");
+  }
+
   // ---- render a set ----
   function skillTag(sk){ const d=SKILLS[sk]||{label:sk,tone:"ink"}; return '<span class="tag t-'+esc(d.tone||"ink")+'">'+esc(d.label)+'</span>'; }
   function renderSet(ds,set,openIdx){
@@ -565,7 +580,7 @@ function start(){
       if(it.script){ const r=document.createElement("div"); r.className="toolbar"; r.style.paddingLeft="36px"; r.appendChild(playBtn(it.script,"▶ "+(i+1)+" の音声（質問も読み上げ）",ik)); item.appendChild(r); }
       const q=document.createElement("div"); q.className="qrow";
       const must = MUST[ik];
-      q.innerHTML='<span class="qno">'+(i+1)+'</span><span class="qtext">'+(must?'<span class="must" title="'+esc(C.mustTitle||"")+'">★ 落とせない</span>':'')+rich(it.q)+'</span>';
+      q.innerHTML='<span class="qno">'+(i+1)+'</span><span class="qtext">'+(must?'<span class="must" title="'+esc(C.mustTitle||"")+'">★ 落とせない</span>':'')+qHTML(it.q)+'</span>';
       item.appendChild(q);
       const LB = set.labels==="iroha" ? "イロハニホヘトチ" : set.labels==="abc" ? "ABCDEFGH" : set.labels==="aiu" ? "アイウエオカキク" : null;
       const lb = ci => LB ? LB[ci] : String(ci+1);
@@ -754,7 +769,7 @@ function start(){
       const lb = ci => LB ? LB[ci] : String(ci+1);
       g.forEach(x=>{
         const it=x.it, item=document.createElement("div"); item.className="item";
-        item.innerHTML='<div class="qrow"><span class="qno">'+(x.i+1)+'</span><span class="qtext">'+(x.must?'<span class="must">★ 落とせない</span>':'')+rich(it.q)+'</span></div>';
+        item.innerHTML='<div class="qrow"><span class="qno">'+(x.i+1)+'</span><span class="qtext">'+(x.must?'<span class="must">★ 落とせない</span>':'')+qHTML(it.q)+'</span></div>';
         const res=document.createElement("div");
         const showEx=ok=>{ res.className="ex"; res.innerHTML='<p><span class="mark '+(ok?"ok":"ng")+'">'+(ok?"正解！一覧から外しました":"不正解 · 正解は "+(it.type==="write"?"解答例のとおり":lb(it.a)))+'</span></p>'+(it.type==="write"?'<p><b class="exh">解答例</b>'+rich(it.ans||"")+'</p>':'')+'<p>'+exHTML(it.ex);
           if(ok){ S.fixed[x.ik]=Date.now(); save(); updateMissLink(); } };
