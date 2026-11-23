@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#fdf8f9">
 <title>問題ドリル</title>
@@ -137,7 +138,7 @@ section.block>h3{font-size:13px;letter-spacing:.1em;color:var(--muted);font-weig
 .qtext{font-family:var(--f-en);font-size:16px;min-width:0}
 .choices{display:flex;flex-direction:column;gap:4px;padding-left:36px}
 .ch{display:flex;gap:10px;align-items:flex-start;text-align:left;border:0;background:transparent;padding:5px 6px;border-radius:6px;font-family:var(--f-en);font-size:15.5px;line-height:1.5}
-.ch:hover{background:var(--paper)}
+@media (hover:hover){.ch:hover{background:var(--paper)}}
 .oval{flex:0 0 auto;width:22px;height:30px;border:1.5px solid var(--print);border-radius:50%;display:grid;place-items:center;font-family:var(--f-body);font-size:11px;color:var(--print);margin-top:-3px}
 .ch.on .oval{background:var(--ink);border-color:var(--ink);color:var(--paper)}
 .ch .ctext{min-width:0;padding-top:1px}
@@ -293,7 +294,7 @@ html{-webkit-text-size-adjust:100%}
   <p class="foot" id="foot"></p>
 </div>
 
-<script src="data/config.js"></script>
+<script>window.DRILL_BUILD="2026-11-23b";document.write('<script src="data/config.js?v='+window.DRILL_BUILD+'"><\/script>');</script>
 <script>
 /* Generic day-by-day drill engine. All exam-specific content lives in data/config.js and data/days/*.js. */
 (function(){
@@ -302,7 +303,7 @@ html{-webkit-text-size-adjust:100%}
   let pending = files.length;
   const done = () => { if(--pending<=0) start(); };
   if(!pending) start();
-  files.forEach(f=>{ const s=document.createElement("script"); s.src=f; s.async=false; s.onload=done; s.onerror=done; document.body.appendChild(s); });
+  files.forEach(f=>{ const s=document.createElement("script"); s.src=f+(window.DRILL_BUILD?"?v="+window.DRILL_BUILD:""); s.async=false; s.onload=done; s.onerror=done; document.body.appendChild(s); });
 
 function start(){
   const DRILL = window.DRILL || window.TEAP || {days:{}};
@@ -323,7 +324,7 @@ function start(){
   document.getElementById("eyebrow").textContent = C.eyebrow || "";
   document.getElementById("heading").textContent = C.heading || C.title || "";
   document.getElementById("leftlabel").textContent = C.examLabel || "本番まで";
-  document.getElementById("foot").textContent = C.foot || "";
+  document.getElementById("foot").textContent = (C.foot || "")+(window.DRILL_BUILD?"（版："+window.DRILL_BUILD+"）":"");
   const mt=document.createElement("meta"); mt.name="apple-mobile-web-app-title"; mt.content=C.title||""; document.head.appendChild(mt);
   if(C.guideHTML){ const g=document.getElementById("guide"); g.hidden=false; document.getElementById("guidetitle").textContent=C.guideTitle||"攻略メモ"; document.getElementById("guidebody").innerHTML=C.guideHTML; }
   if(C.guidePage){ const gl=document.getElementById("guidelink"); gl.hidden=false; gl.href=C.guidePage; gl.textContent=C.guidePageLabel||"入試方式ガイド"; }
