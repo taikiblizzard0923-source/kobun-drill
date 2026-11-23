@@ -228,6 +228,28 @@ html{-webkit-text-size-adjust:100%}
 .passage.vert .lbl{text-combine-upright:all;-webkit-text-combine:horizontal;vertical-align:baseline;margin:0 0 2px}
 .passage.vert .src-note{text-align:end;margin-block-start:.5em}
 .vbtn{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:5px 12px;font-size:13px}
+.vbtn.on{background:var(--print);border-color:var(--print);color:#fff}
+.pin{position:relative}
+.ink{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.passage.inking .ink{pointer-events:auto;touch-action:none;cursor:crosshair}
+.passage.inking{outline:2px solid var(--print);outline-offset:2px}
+.printbtn{margin-left:auto}
+@media print{
+  .top,.strip,.guide,.guidelink,.toolbar,.vbtn,.foot,.ink,.small-btn,.selfmark,.dayhead .oshi,.cheer,.tasks input,.btn{display:none!important}
+  body{background:#fff;color:#000;font-size:12pt}
+  .wrap{max-width:none;padding:0}
+  .set{border:0;break-inside:auto}
+  .split.two{display:block!important}
+  .split.two .src{position:static!important;max-height:none!important;overflow:visible!important}
+  .passage,.passage.vert{writing-mode:horizontal-tb!important;-webkit-writing-mode:horizontal-tb!important;height:auto!important;max-height:none!important;overflow:visible!important;border:1px solid #999;line-height:2.1}
+  .passage u{border-bottom:1.5px solid #000}
+  .vw .ja{visibility:visible}
+  .ch{min-height:0;padding:2px 0}
+  .set>summary{padding:6px 0;border-bottom:1px solid #000}
+  .tasks li{grid-template-columns:60px 1fr!important;padding:4px 0}
+  .vocab{grid-template-columns:repeat(5,1fr)!important}
+  .item{break-inside:avoid}
+}
 @media (min-width:900px){.split.two .passage.vert{height:calc(100vh - 150px);max-height:none;overflow-x:auto;overflow-y:hidden}}
 .passage .lbl{font-family:var(--f-body);font-size:.72em;color:var(--print);font-weight:700;vertical-align:.35em;margin-right:1px}
 </style>
@@ -458,6 +480,34 @@ function start(){
     wrap.append(b,t); return wrap;
   }
 
+  // ---- ink: draw lines on the passage with a finger or Apple Pencil (saved per layout on this device) ----
+  S.ink=S.ink||{};
+  function inkSetup(key, box, pin, cv, tb){
+    const ctx=cv.getContext("2d"); let strokes=[], sig="", cur=null;
+    const color=()=>getComputedStyle(document.documentElement).getPropertyValue("--print").trim()||"#c2477a";
+    function size(){ const r=pin.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+      const ns=(box.classList.contains("vert")?"v":"h")+Math.round(r.width)+"x"+Math.round(r.height);
+      cv.width=Math.max(1,Math.round(r.width*dpr)); cv.height=Math.max(1,Math.round(r.height*dpr)); ctx.setTransform(dpr,0,0,dpr,0,0);
+      if(ns!==sig){ sig=ns; strokes=((S.ink[key]||{})[sig]||[]).map(a=>a.slice()); } draw(); }
+    function draw(){ ctx.clearRect(0,0,cv.width,cv.height); ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=color(); ctx.lineWidth=2.2; ctx.globalAlpha=.85;
+      strokes.concat(cur?[cur]:[]).forEach(st=>{ if(st.length<4) return; ctx.beginPath(); ctx.moveTo(st[0],st[1]); for(let i=2;i<st.length;i+=2) ctx.lineTo(st[i],st[i+1]); ctx.stroke(); }); }
+    function persist(){ const m=S.ink[key]||{}; if(strokes.length) m[sig]=strokes; else delete m[sig]; if(Object.keys(m).length) S.ink[key]=m; else delete S.ink[key]; save(); }
+    const pt=e=>{ const r=pin.getBoundingClientRect(); return [Math.round(e.clientX-r.left), Math.round(e.clientY-r.top)]; };
+    cv.addEventListener("pointerdown",e=>{ if(!box.classList.contains("inking")) return; e.preventDefault(); cv.setPointerCapture(e.pointerId); cur=pt(e); draw(); });
+    cv.addEventListener("pointermove",e=>{ if(!cur) return; e.preventDefault(); const q=pt(e); cur.push(q[0],q[1]); draw(); });
+    const end=()=>{ if(!cur) return; if(cur.length>=4) strokes.push(cur); cur=null; persist(); draw(); };
+    cv.addEventListener("pointerup",end); cv.addEventListener("pointercancel",end);
+    const pen=document.createElement("button"); pen.type="button"; pen.className="vbtn"; pen.textContent="✏ 本文に線を引く";
+    const undo=document.createElement("button"); undo.type="button"; undo.className="vbtn"; undo.textContent="1本戻す"; undo.hidden=true;
+    const clr=document.createElement("button"); clr.type="button"; clr.className="vbtn"; clr.textContent="線を全部消す"; clr.hidden=true;
+    pen.addEventListener("click",()=>{ const on=!box.classList.contains("inking"); box.classList.toggle("inking",on); pen.classList.toggle("on",on); pen.textContent=on?"✏ 線を引くのをやめる（スクロールに戻す）":"✏ 本文に線を引く"; undo.hidden=clr.hidden=!on; });
+    undo.addEventListener("click",()=>{ strokes.pop(); persist(); draw(); });
+    clr.addEventListener("click",()=>{ if(!strokes.length) return; if(clr.dataset.c!=="1"){ clr.dataset.c="1"; clr.textContent="もう一度押すと全部消えます"; setTimeout(()=>{ clr.dataset.c=""; clr.textContent="線を全部消す"; },2500); return; } strokes=[]; persist(); draw(); clr.dataset.c=""; clr.textContent="線を全部消す"; });
+    tb.append(pen,undo,clr);
+    requestAnimationFrame(size);
+    if(window.ResizeObserver) new ResizeObserver(()=>size()).observe(pin); else window.addEventListener("resize",size);
+  }
+
   // ---- render a set ----
   function skillTag(sk){ const d=SKILLS[sk]||{label:sk,tone:"ink"}; return '<span class="tag t-'+esc(d.tone||"ink")+'">'+esc(d.label)+'</span>'; }
   function renderSet(ds,set,openIdx){
@@ -487,8 +537,10 @@ function start(){
     }
     if(set.passage){
       const p=document.createElement("div"); p.className="passage"+(vertOn()?" vert":"");
-      p.innerHTML=paras(set.passage);
+      const pin=document.createElement("div"); pin.className="pin"; pin.innerHTML=paras(set.passage);
+      const cv=document.createElement("canvas"); cv.className="ink"; pin.appendChild(cv); p.appendChild(pin);
       src.appendChild(p);
+      inkSetup(k, p, pin, cv, tb);
       if(graded && set.passageJa) src.appendChild(jaBox(set.passageJa));
       else if(set.passageJa){ const n=document.createElement("p"); n.className="note"; n.style.margin="0"; n.textContent=(C.translationLabel||"全訳").replace("を表示","")+"は答え合わせのあとに表示されます。"; src.appendChild(n); }
     }
@@ -604,6 +656,8 @@ function start(){
     const idx=DAYS.indexOf(current)+1, lab=labelOf(current);
     const on=C.oshi&&C.oshi[current];
     head.innerHTML=(on?'<span class="oshi">'+esc((C.oshiFormat||"今日は{name}の日").split("{name}")[0])+'<b>'+esc(on)+'</b>'+esc((C.oshiFormat||"今日は{name}の日").split("{name}")[1]||"")+'</span>':(lab?'<span class="oshi">'+esc(lab)+'</span>':''))+(meta.cheer?'<p class="cheer">'+esc(meta.cheer)+'</p>':'')+'<span class="meta">'+f.md+'（'+f.w+'）· Day '+idx+(day&&day.minutes?' · 目安 '+day.minutes+'分':'')+(on&&lab?' · '+esc(lab):'')+'</span><h2>'+esc(day&&day.theme?day.theme:(meta.plan||""))+'</h2>';
+    if(day){ const pb=document.createElement("button"); pb.type="button"; pb.className="small-btn printbtn"; pb.textContent="🖨 この日を印刷・PDFにする";
+      pb.addEventListener("click",()=>{ document.querySelectorAll("details.set").forEach(d=>d.open=true); setTimeout(()=>window.print(),300); }); head.appendChild(pb); }
     main.appendChild(head);
 
     if(ex.length){
