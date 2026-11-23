@@ -62,6 +62,9 @@ button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid
 .chip.sel .o{color:var(--paper)}
 .oshi{align-self:flex-start;font-family:var(--f-display);font-size:15px;color:var(--print);background:var(--print-soft);border-radius:999px;padding:3px 14px}
 .oshi b{font-weight:800;font-size:17px;margin:0 2px}
+.chip .m{font-size:11px;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:700;line-height:1.25}
+.chip .m.x{font-size:9.5px;font-weight:500;color:var(--print);letter-spacing:-.03em}
+.chip.sel .m{color:var(--paper)}
 .chip .s{font-size:11px;font-variant-numeric:tabular-nums;color:var(--muted);min-height:1.3em}
 .chip.today{border-color:var(--print)}
 .chip.today .w{color:var(--print);font-weight:700}
@@ -368,6 +371,9 @@ function start(){
     const hit=DAYS.find(d=>d.slice(5).replace("-","")===m[2] && (!m[1]||d.startsWith(m[1]))); return hit||null; }
   current = fromHash() || current;
 
+  // study time shown under each date: drill minutes, plus past-exam minutes when scheduled
+  function minLine(ds){ const d=DRILL.days[ds], xs=(C.extra||{})[ds]||[]; const x=xs.reduce((n,t)=>n+(t.min||0),0);
+    if(!d&&!x) return ""; return '<span class="m">'+(d&&d.minutes?d.minutes+'分':'')+'</span>'+(x?'<span class="m x">過去問'+x+'</span>':''); }
   function renderStrip(){
     const el=document.getElementById("strip"); el.innerHTML="";
     DAYS.forEach(ds=>{
@@ -380,7 +386,7 @@ function start(){
       else if(st&&st.total) s=Math.round(st.correct/st.total*100)+"%";
       else if(st&&st.done) s="済";
       const lb=(C.oshi&&C.oshi[ds]) ? C.oshi[ds].slice(0,2) : (META[ds]&&META[ds].label);
-      b.innerHTML='<span class="d">'+f.md+'</span><span class="w">'+(ds===TODAY?"今日":f.w)+'</span>'+(lb?'<span class="o">'+esc(shortLabel(lb))+'</span>':'')+'<span class="s">'+s+'</span>';
+      b.innerHTML='<span class="d">'+f.md+'</span><span class="w">'+(ds===TODAY?"今日":f.w)+'</span>'+(lb?'<span class="o">'+esc(shortLabel(lb))+'</span>':'')+minLine(ds)+'<span class="s">'+s+'</span>';
       b.setAttribute("aria-current", ds===current?"date":"false");
       b.addEventListener("click",()=>{ current=ds; history.replaceState(null,"","#d"+ds.replace(/-/g,"")); render(); });
       el.appendChild(b);
